@@ -1,0 +1,13 @@
+会員登録ページ(スタイリングはまだ適当です)
+
+
+
+<form method="post" action="{% url 'signup' %}" enctype="multipart/form-data" class="signup-form">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" class="signup-form__submit">Sign Up</button>
+</form>
+
+<!-
+今は作りが雑です
+->
