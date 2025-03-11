@@ -3,6 +3,7 @@ from django.views.generic import CreateView
 from django.contrib.auth import get_user_model
 from .forms import SignUpForm
 from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
 
 User = get_user_model()
 
@@ -42,3 +43,10 @@ urls.pyのpath関数を見てください。nameがpath関数の第三引数に�
 細かいことを言うと、reverse関数というものがあり、reverse_lazyはこれの遅延評価版
 なのですが、今はまだ覚えなくて大丈夫です。
 """
+
+class SignIn(LoginView):
+    template_name = 'chatapp_app/login.html'
+    redirect_authenticated_user = True
+
+def home(request):
+    return render(request,'chatapp_app/home.html')
