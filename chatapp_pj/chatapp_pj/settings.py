@@ -111,7 +111,7 @@ TIME_ZONE = 'Asia/Tokyo'
 
 """
 日本で開発するのであれば、
-LANGUAGE_CODEはen-usに、
+LANGUAGE_CODEはjaに、
 TIME_ZONEは'Asia/Tokyo'
 に設定すると使いやすくなります。
 """
