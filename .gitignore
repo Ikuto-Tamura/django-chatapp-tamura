@@ -23,7 +23,7 @@ env/
 
 # 静的ファイル (Django collectstatic)
 staticfiles/
-media/
+media_local/
 
 # VSCode
 .vscode/
