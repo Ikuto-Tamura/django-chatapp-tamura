@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 自分で作成したアプリを追加します。ちなみに、INSTALLED_APPSに追加する順番は重要なので気をつけてください。基本的に末尾に追加しましょう。
     'chatapp_app',
 ]
 
@@ -106,7 +107,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tokyo'
+
+"""
+日本で開発するのであれば、
+LANGUAGE_CODEはen-usに、
+TIME_ZONEは'Asia/Tokyo'
+に設定すると使いやすくなります。
+"""
 
 USE_I18N = True
 
@@ -125,5 +133,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'chatapp_app.User'
 
+"""
+自作のUserモデルを作ったら、AUTH_USER_MODELに設定しましょう。
+(アプリ名).(ユーザーモデル名)です。
+実は、初めてmigrationを行うよりさきに、この作業をしたほうがいいです。
+"""
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media_local'
+
+"""
+画像に関する設定です。
+ブラウザから画像にアクセスするときには、http://127.0.0.1:8000/media/(画像ファイル名)とパスを入力すればよいです。
+また、この設定だとmedia_localの中にアップロードした画像が保存されます。
+"""

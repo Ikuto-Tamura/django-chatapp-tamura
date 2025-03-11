@@ -1,7 +1,11 @@
 from django.urls import path
-from .views import index, SignUpView
+from . import views
 
 urlpatterns = [
-    path('', index, name='index'),
-    path('signup/',SignUpView.as_view(),name='signup'),
+    path('', views.index, name='index'),
+    path('signup/',views.SignUpView.as_view(),name='signup'),
 ]
+
+"""
+クラスベースビュー(CBV)を用いるときは.as_view()を忘れないようにしましょう
+"""

@@ -26,3 +26,9 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+"""
+画像に関する設定です。
+ブラウザから画像にアクセスするときには、http://127.0.0.1:8000/media/(画像ファイル名)とパスを入力すればよいです。
+また、この設定だとmedia_localの中にアップロードした画像が保存されます。
+"""
