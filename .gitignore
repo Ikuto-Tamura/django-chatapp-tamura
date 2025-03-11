@@ -1,6 +1,5 @@
 # SQLite database
 chatapp_pj/db.sqlite3
-db.sqlite3
 
 # Python関連
 *.pyc
