@@ -1,0 +1,29 @@
+# SQLite database
+db.sqlite3
+
+# Python関連
+*.pyc
+__pycache__/
+*.pyo
+
+# 環境設定
+.env
+*.env
+
+# バーチャル環境
+venv/
+env/
+
+# Django migrations
+*/migrations/*.py
+*/migrations/*.pyc
+
+# ログ
+*.log
+
+# 静的ファイル (Django collectstatic)
+staticfiles/
+media/
+
+# VSCode
+.vscode/
