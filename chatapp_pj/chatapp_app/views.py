@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView
 
 from .forms import SignUpForm
 
@@ -19,6 +20,10 @@ Userモデルを変更したときに、個々のビューを書き直さなく�
 
 class IndexView(TemplateView):
     template_name = 'chatapp_app/index.html'
+
+"""
+htmlを描写するだけであれば、TemplateViewを継承することでとてもシンプルに書くことができます。
+"""
 
 class SignUpView(CreateView):
     model = User
@@ -51,7 +56,18 @@ class SignIn(LoginView):
     template_name = 'chatapp_app/login.html'
     redirect_authenticated_user = True
 
+"""
+Login機能はLoginViewを継承することで簡単に実装することができます。
+redirect_authenticated_userというattributeをTrueに設定していますが、これが何なのか調べてみましょう。
+Falseにしてみて、挙動の変化を確かめてみるのも大事です。
+"""
 
 
-def home(request):
-    return render(request,'chatapp_app/home.html')
+
+class HomeView(LoginRequiredMixin,ListView):
+    model = User
+    template_name = 'chatapp_app/home.html'
+    context_object_name = 'users'
+
+    def get_queryset(self):
+        return User.objects.exclude(id=self.request.user.id)
