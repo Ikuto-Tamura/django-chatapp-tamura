@@ -147,3 +147,6 @@ MEDIA_ROOT = BASE_DIR / 'media_local'
 ブラウザから画像にアクセスするときには、http://127.0.0.1:8000/media/(画像ファイル名)とパスを入力すればよいです。
 また、この設定だとmedia_localの中にアップロードした画像が保存されます。
 """
+
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = '/'
