@@ -1,9 +1,10 @@
-from django.shortcuts import render
-from django.views.generic import CreateView
 from django.contrib.auth import get_user_model
-from .forms import SignUpForm
-from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, TemplateView
+
+from .forms import SignUpForm
 
 User = get_user_model()
 
@@ -14,8 +15,10 @@ User = get_user_model()
 Userモデルを変更したときに、個々のビューを書き直さなくて良いという利点があります。
 """
 
-def index(request):
-    return render(request,'chatapp_app/index.html') 
+
+
+class IndexView(TemplateView):
+    template_name = 'chatapp_app/index.html'
 
 class SignUpView(CreateView):
     model = User
@@ -47,6 +50,8 @@ urls.pyのpath関数を見てください。nameがpath関数の第三引数に�
 class SignIn(LoginView):
     template_name = 'chatapp_app/login.html'
     redirect_authenticated_user = True
+
+
 
 def home(request):
     return render(request,'chatapp_app/home.html')
