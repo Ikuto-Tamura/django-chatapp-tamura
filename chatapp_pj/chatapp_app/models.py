@@ -1,6 +1,6 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     user_icon = models.ImageField('プロフィール画像',upload_to='user_icons',default="sori_snow_boy.png")
@@ -14,5 +14,6 @@ ImageFieldは画像を扱えるモデルフィールドです。これを使う�
 """
 
 """
-画像を扱えるFieldには、ImageFieldやFileFiledがあります。なぜ、FileFieldではなく、ImageFiledをもちいるのか
+画像を扱えるFieldには、ImageFieldやFileFiledがあります。なぜ、FileFieldではなく、ImageFiledを用いるのかなども考えてみると良いと思います。
+現状では、優先度はそこまで高くないので、djangoの実装に慣れてきたら考えてみてください。
 """

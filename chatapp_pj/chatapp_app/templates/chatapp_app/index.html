@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-こんにちは。<br>
-<a href="{% url 'signup' %}">会員登録ページへ</a><br>
-<a href="{% url 'login' %}">ログインページへ</a>
-</body>
-</html>
+{% extends 'chatapp_app/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>ここはチャットアプリの入口です</h1><br>
+<div class="auth-buttons">
+    <a href="{% url 'signup' %}" class="md-button md-filled">会員登録</a>
+    <a href="{% url 'login' %}" class="md-button md-outlined">ログイン</a>
+</div>
+{% endblock %}
+
+

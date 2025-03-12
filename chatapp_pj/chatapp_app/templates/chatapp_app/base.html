@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <title>{% block title %}My Chat App{% endblock %}</title>
+    <link rel="stylesheet" href="../../static/css/base.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        {% block header %}
+        {% endblock %}
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+       {% block footer %}
+       {% endblock %}
+    </footer>
+</body>
+</html>

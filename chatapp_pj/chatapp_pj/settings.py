@@ -22,6 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-_xzh*8o!p#*vf(!7qv^&w@s-cs0&tf!@r=(e+8w$0^418y1cn3'
 
+"""
+本当は環境変数として外部ファイルに移してアップロードしないほうが良いのですが、今回は練習用でまだ.envは使わないので後回しで大丈夫です。
+"""
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -155,4 +159,6 @@ LOGOUT_REDIRECT_URL = '/'
 LoginViewを継承したViewを用いているとき、これらの変数が参照されます。
 LoginViewの実装をよく見ると、ログイン後のリダイレクト先に採用するURLには優先順位があることが分かります。
 興味があれば実装を見てみましょう。
+また、今回は遷移先のURLをURLパターンの名前で指定しています。
+これは、本来はreverse関数が必要なのですが、djangoが、自動で呼び出すように実装されています。
 """

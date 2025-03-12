@@ -59,7 +59,10 @@ class SignIn(LoginView):
 """
 Login機能はLoginViewを継承することで簡単に実装することができます。
 redirect_authenticated_userというattributeをTrueに設定していますが、これが何なのか調べてみましょう。
-Falseにしてみて、挙動の変化を確かめてみるのも大事です。
+Falseにしてみて、挙動の変化を確かめてみるのもいい実験だと思います。
+ちなみに、管理画面adminにログインしていると、ログインしている扱いになってしまいます。
+これは、ログインの情報をrequest.sessionで管理しているからです。
+ログイン機能の挙動を確認したいときは、一旦adminからログアウトすることが必要になったりします。
 """
 
 
@@ -71,3 +74,18 @@ class HomeView(LoginRequiredMixin,ListView):
 
     def get_queryset(self):
         return User.objects.exclude(id=self.request.user.id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # ログインしているユーザーを 'logged_in_user' というコンテキストに追加
+        context['logged_in_user'] = self.request.user
+        return context
+    
+"""
+context_object_nameを設定すると何ができるようになるか調べてみましょう。
+get_queryset(self)とget_context_data(self,**kwargs)は頻出のメソッドです。それぞれどのようなメソッドかを調べてみましょう。
+今回は、オーラバーライドしてget_querysetが独自の処理を施すようにカスタマイズしています。
+ここでは、ORM(Object-Relational Mapping)という概念が登場します。
+次の記事が分かりやすいです。
+https://qiita.com/sotaheavymetal21/items/34cf15d0b5f4ac0a2d0f
+"""
