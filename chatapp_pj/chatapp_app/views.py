@@ -3,12 +3,12 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.db.models import Q
+from django.db.models import OuterRef, Q, Subquery
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, ListView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView
 
 from .forms import SignUpForm
 from .models import Chat
@@ -27,6 +27,7 @@ Userモデルを変更したときに、個々のビューを書き直さなく�
 class IndexView(TemplateView):
     template_name = 'chatapp_app/index.html'
     
+    #すでにログインしている場合にこのページを訪れようとしたらhomeにリダイレクトされる処理
     def dispatch(self, request, *args, **kwargs):
         # ログインしている場合、他のページにリダイレクト
         if request.user.is_authenticated:
@@ -34,10 +35,28 @@ class IndexView(TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
 """
-htmlを描写するだけであれば、TemplateViewを継承することでとてもシンプルに書くことができます。
-ここで、dispatchメソッドというものをオーバーライドしています。
+htmlを描写するだけであれば、TemplateViewを継承し、template_nameを指定するだけでとてもシンプルに書くことができます。
 """
 
+
+"""
+(発展)
+ここで、dispatchメソッドというものをオーバーライドしています。
+dispatchメソッドの本来の役割はここでは解説しません。
+しかし、大事なこととしてdispatchメソッドは、Viewが呼び出されたときに最初に発動するメソッドです。
+そのため、dispatchメソッドを改良してリダイレクトの処理を加えることで一貫とした処理を効率的に加えることができます。
+もし、ログインしている状態であればdispatchメソッドはhomeという名前のURLにリダイレクトするメソッドに変化し、
+そうでなければ本来の親クラス(TemplateView)のdispatchメソッドの機能を果たすように条件分岐しています。
+"""
+
+"""
+(発展)
+dispatchメソッドの改良で、条件分岐が加わっていることを解説しました。
+条件分岐は、本来であればif節とelse節、場合によってはelif節を書くと勉強したのではないでしょうか。
+しかし、returnがif節の処理に入っている場合、このようにelse節を省略して書くことができます。
+この知識はよく使うので覚えておくと良いです。
+"""
+#すでにログインしている場合にこのページを訪れようとしたらhomeにリダイレクトされる処理
 class SignUpView(CreateView):
     model = User
     template_name = "chatapp_app/signup.html"
@@ -84,12 +103,6 @@ Falseにしてみて、挙動の変化を確かめてみるのもいい実験だ
 ログイン機能の挙動を確認したいときは、一旦adminからログアウトすることが必要になったりします。
 """
 
-
-
-
-
-
-from django.db.models import OuterRef, Subquery
 
 
 class HomeView(LoginRequiredMixin, ListView):
@@ -144,12 +157,17 @@ class HomeView(LoginRequiredMixin, ListView):
 
     
 """
-context_object_nameを設定すると何ができるようになるか調べてみましょう。
+context_object_nameやpagenate_byを設定すると何ができるようになるか調べてみましょう。
 get_queryset(self)とget_context_data(self,**kwargs)は頻出のメソッドです。それぞれどのようなメソッドかを調べてみましょう。
-今回は、オーラバーライドしてget_querysetが独自の処理を施すようにカスタマイズしています。
-ここでは、ORM(Object-Relational Mapping)という概念が登場します。
+今回は、オーラバーライドしてget_querysetやget_context_dataが独自の処理を施すようにカスタマイズしています。
+(モデル).objects.excludeや(モデル).objects.filterといった記述が出てきますが、これはORMという概念を理解することでコードの
+意味を理解できるようになると思います。
 次の記事が分かりやすいです。
 https://qiita.com/sotaheavymetal21/items/34cf15d0b5f4ac0a2d0f
+QオブジェクトやSubquery,OuterRefやannotateなどは大事なのでこれも意味を理解するようにしましょう。
+これらの意味がわかれば、このViewの意味も理解できるはずです。
+ソートの処理はそこまで頻出ではないと思います。Noneを含むソートがあるので、複雑な処理となっています。
+私も初めて知りました。
 """
 
 
@@ -187,5 +205,21 @@ class TalkRoomView(LoginRequiredMixin, TemplateView):
 
         return self.get(request, *args, **kwargs)
     
+"""
+HomeViewでオーバーライドしたget_querysetやget_context_dataに加え、postというメソッドをオーバーライドしています。
+talk_roomでは、単にページにアクセスするだけでなく、メッセージを送信するという機能があり、POSTの処理が必要になるからですね。
+get_object_or_404も大事なので覚えましょう。
+message = request.POST.get('message')はhtmlのフォームを復習すれば意味がつかめると思います。
+今度は(モデル).obejcts.createというORMが登場しています。新しいインスタンスを作成するORMがこれに該当し、
+この処理を楽にかけるようにしたのが実はCreateViewです。今回はすこし複雑なので、自分でこのロジックを実装しています。
+"""
+
+"""(発展)
+.select_related('sender', 'receiver')という記述があります。
+これはN+1問題を解消するもので、基本的に必須の処理になります。
+今すぐでなくていいですが、いずれ覚えるようにしましょう。
+"""
+
+
 class SettingView(LoginRequiredMixin,TemplateView):
     template_name = 'chatapp_app/settings.html'

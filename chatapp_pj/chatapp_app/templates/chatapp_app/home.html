@@ -9,11 +9,13 @@
     <h2>ようこそ, {{ logged_in_user.username }}さん!</h2>
     <div class="profile-section">
         <img src="{{ logged_in_user.user_icon.url }}" class="profile-img" class="profile-img">
+        <!-- 画像のフィールドだけ、テンプレート変数で扱うときにこのように書くことに注意してください。{{.user_icon}}では表示できません-->
         <div class="side-button">
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="md-button md-filled" >ログアウト</button>
             </form>
+            <!-- ログアウトの処理は、実はGETではなく、POSTが良いとされており、このような実装になっています。-->
             <a href="{% url 'settings' %}"><button class="md-button md-outlined">設定</button></a>
         </div>
     </div>
@@ -43,7 +45,7 @@
         {% endfor %}
     </ul>
 </div>
-<!-- 以下はページネーションボタンの実装です。-->
+<!-- 発展 以下はページネーションボタンの実装です。多分自分であれこれ考える必要はあまりない。-->
 <div class="pagination">
     {% if is_paginated %}
         {% if page_obj.has_previous %}

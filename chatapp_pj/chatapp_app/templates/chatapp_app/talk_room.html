@@ -9,39 +9,33 @@
     <a href="{% url 'home' %}" class="back-button"><</a>
     {{ other_user.username }}</h2>
 
-<div class="chat-box" id="chat-box">
-    {% for message in messages %}
-        {% if message.sender == request.user %}
-            <div class="message my-message">
+    <div class="chat-box" id="chat-box">
+        {% for message in messages %}
+            <div class="message {% if message.sender == request.user %}my-message{% else %}other-message{% endif %}">
                 <img src="{{ message.sender.user_icon.url }}" class="profile-img">
                 <div class="message-content">
                     {{ message.chat }}
-                    <span class="timestamp">{{ message.created_at}}</span>
+                    <span class="timestamp">{{ message.created_at }}</span>
                 </div>
             </div>
-        {% else %}
-            <div class="message other-message">
-                <img src="{{ message.sender.user_icon.url }}" class="profile-img">
-                <div class="message-content">
-                    {{ message.chat }}
-                    <span class="timestamp">{{ message.created_at}}</span>
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
+    <!-- divのクラス名が自分が送ったメッセージが相手が送ったメッセージかで場合分けされていることに注意してください。このような書き方もできます。-->
+    
 
 <form method="post" class="message-form">
     {% csrf_token %}
     <div class="input-wrapper">
         <input type="text" name="message" placeholder="メッセージを入力" required>
+        <!-- name="message"と書いてあることがViewで重要になっています。フォームのattributeである
+        type,name,placeholder,requiredは必須なのでよく覚えるようにしましょう-->
         <button type="submit">
             <span class="send-button">送信</span>
         </button>
     </div>
 </form>
 
-<!-- 常に最新のメッセージが見れるようにスクロールバーを下にあわせておきます。-->
+<!-- 発展 常に最新のメッセージが見れるようにスクロールバーを下にあわせておきます。-->
 
 <script>
     window.onload = function() {

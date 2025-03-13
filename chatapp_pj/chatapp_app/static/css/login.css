@@ -44,7 +44,7 @@ input[type="password"] {
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus {
-    border-color: #6200ee;
+    border-color: var(--md-primary);
     outline: none;
 }
 
@@ -57,7 +57,7 @@ input[type="password"]:focus {
 
 /* ボタン */
 button {
-    background-color: #6200ee;
+    background-color: var(--md-primary);
     color: white;
     border: none;
     padding: 12px;

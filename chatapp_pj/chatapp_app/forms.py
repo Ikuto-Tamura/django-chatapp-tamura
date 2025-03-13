@@ -13,7 +13,3 @@ class SignUpForm(UserCreationForm):
 """
 get_user_model()についてはvies.pyのところで解説しています
 """
-
-"""
-
-"""
