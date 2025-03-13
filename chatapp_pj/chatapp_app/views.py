@@ -35,6 +35,7 @@ class IndexView(TemplateView):
 
 """
 htmlを描写するだけであれば、TemplateViewを継承することでとてもシンプルに書くことができます。
+ここで、dispatchメソッドというものをオーバーライドしています。
 """
 
 class SignUpView(CreateView):
@@ -87,43 +88,59 @@ Falseにしてみて、挙動の変化を確かめてみるのもいい実験だ
 
 
 
+
+from django.db.models import OuterRef, Subquery
+
+
 class HomeView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'chatapp_app/home.html'
     context_object_name = 'users'
-    paginate_by = 4
+    paginate_by = 5
 
     def get_queryset(self):
+        # ログインユーザー以外のUserを取得
         return User.objects.exclude(id=self.request.user.id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # ログインしているユーザーを 'logged_in_user' というコンテキストに追加
         context['logged_in_user'] = self.request.user
-        
-        # 各ユーザーとの最新のトークを格納するリストを初期化
+
+        # 各ユーザーの最新メッセージを取得するために、annotateを使用
         users = context['users']
-        latest_messages = []
 
+        # 最新メッセージを取得するサブクエリ
+        latest_message_subquery = Chat.objects.filter(
+            Q(sender=self.request.user, receiver=OuterRef('pk')) |
+            Q(sender=OuterRef('pk'), receiver=self.request.user)
+        ).order_by('-created_at')
+
+        # 各ユーザーに対して最新メッセージを追加する
+        users = users.annotate(
+            latest_message=Subquery(latest_message_subquery.values('chat')[:1]),
+            latest_message_time=Subquery(latest_message_subquery.values('created_at')[:1]),
+        )
+
+        # コンテキストに追加するリストを準備
+        user_and_latest_messages = []
         for user in users:
-            # ログインユーザーとその友達との間のメッセージを取得
-            message = Chat.objects.filter(
-                Q(sender=self.request.user, receiver=user) | Q(sender=user, receiver=self.request.user)
-            ).order_by('-created_at').first()  # 最新のメッセージを取得
+            user_and_latest_messages.append({
+                'user': user,
+                'message': user.latest_message,
+                'time': user.latest_message_time,
+            })
 
-            if message:
-                latest_messages.append({'user': user, 'message': message.chat, 'time':message.created_at})  # ユーザーとメッセージをタプルとして格納
-            else:
-                latest_messages.append({'user': user, 'message': None,'time':None})  # メッセージがない場合はNoneを格納
-                
-        latest_messages.sort(
+        # 時間順にソート
+        user_and_latest_messages.sort(
             key=lambda x: x['time'] if x['time'] is not None else timezone.make_aware(datetime.datetime.min),
             reverse=True
         )
 
-        context['latest_messages'] = latest_messages  # コンテキストに追加
+        context['user_and_latest_messages'] = user_and_latest_messages
 
         return context
+
+
 
     
 """
@@ -146,11 +163,9 @@ class TalkRoomView(LoginRequiredMixin, TemplateView):
 
         # メッセージが存在しなくてもアクセス可能
         messages = Chat.objects.filter(
-            sender=self.request.user, receiver=other_user
-        ) | Chat.objects.filter(
-            sender=other_user, receiver=self.request.user
-        )
-        return messages.order_by('created_at')
+                Q(sender=self.request.user, receiver=other_user) | Q(sender=other_user, receiver=self.request.user)
+            ).select_related('sender', 'receiver').order_by('created_at')
+        return messages
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

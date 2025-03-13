@@ -20,7 +20,7 @@
 
     <h3>チャット可能なおともだち</h3>
     <ul class="friend-list">
-        {% for item in latest_messages %}
+        {% for item in user_and_latest_messages %}
         <a href="{% url 'talk_room' item.user.id %}" class="friend-link">
         <li class="friend">
             

@@ -14,10 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,3 +32,9 @@ if settings.DEBUG:
 ブラウザから画像にアクセスするときには、http://127.0.0.1:8000/media/(画像ファイル名)とパスを入力すればよいです。
 また、この設定だとmedia_localの中にアップロードした画像が保存されます。
 """
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

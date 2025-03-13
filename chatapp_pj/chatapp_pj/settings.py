@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 自分で作成したアプリを追加します。ちなみに、INSTALLED_APPSに追加する順番は重要なので気をつけてください。基本的に末尾に追加しましょう。
     'chatapp_app',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'chatapp_pj.urls'
@@ -163,3 +165,7 @@ LoginViewの実装をよく見ると、ログイン後のリダイレクト先�
 また、今回は遷移先のURLをURLパターンの名前で指定しています。
 これは、本来はreverse関数が必要なのですが、djangoが、自動で呼び出すように実装されています。
 """
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
