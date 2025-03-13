@@ -1,9 +1,13 @@
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from .forms import SignUpForm
@@ -75,19 +79,45 @@ Falseにしてみて、挙動の変化を確かめてみるのもいい実験だ
 
 
 
-class HomeView(LoginRequiredMixin,ListView):
+
+
+class HomeView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'chatapp_app/home.html'
     context_object_name = 'users'
 
     def get_queryset(self):
         return User.objects.exclude(id=self.request.user.id)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # ログインしているユーザーを 'logged_in_user' というコンテキストに追加
         context['logged_in_user'] = self.request.user
+        
+        # 各ユーザーとの最新のトークを格納するリストを初期化
+        users = context['users']
+        latest_messages = []
+
+        for user in users:
+            # ログインユーザーとその友達との間のメッセージを取得
+            message = Chat.objects.filter(
+                Q(sender=self.request.user, receiver=user) | Q(sender=user, receiver=self.request.user)
+            ).order_by('-created_at').first()  # 最新のメッセージを取得
+
+            if message:
+                latest_messages.append({'user': user, 'message': message.chat, 'time':message.created_at})  # ユーザーとメッセージをタプルとして格納
+            else:
+                latest_messages.append({'user': user, 'message': None,'time':None})  # メッセージがない場合はNoneを格納
+                
+        latest_messages.sort(
+            key=lambda x: x['time'] if x['time'] is not None else timezone.make_aware(datetime.datetime.min),
+            reverse=True
+        )
+
+        context['latest_messages'] = latest_messages  # コンテキストに追加
+
         return context
+
     
 """
 context_object_nameを設定すると何ができるようになるか調べてみましょう。

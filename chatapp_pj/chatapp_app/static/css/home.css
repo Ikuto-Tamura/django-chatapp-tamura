@@ -1,4 +1,120 @@
-img {
-    width: 50px;
-    height: 50px;
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h2,
+h3 {
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-img {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+}
+
+.username {
+    font-size: 1.2rem;
+    color: var(--md-sys-color-on-background);
+    font-weight: 500;
+}
+
+/* Friend List */
+.friend-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 80%;
+}
+
+.friend {
+    background-color: var(--md-sys-color-surface);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.friend:hover {
+    background-color: var(--md-sys-color-primary);
+}
+
+.friend-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+.friend-info {
+    display: flex;
+}
+
+.friend-name {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--md-sys-color-on-surface);
+    padding-top: 10px;
+    width: 80px;
+}
+
+.latest-message {
+    font-size: 0.9rem;
+    color: var(--md-sys-color-on-surface);
+}
+
+.no-message {
+    font-size: 0.9rem;
+    color: var(--md-sys-color-secondary);
+}
+
+.message-time {
+    font-size: 0.8rem;
+    color: var(--md-sys-color-on-surface);
+    margin-top: 5px;
+}
+
+/* Logout Button */
+.logout {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.md-button.md-filled {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.md-button.md-filled:hover {
+    background-color: #3700b3;
+    transform: translateY(-2px);
+}
+
+.md-button.md-outlined {
+    background-color: transparent;
+    color: var(--md-sys-color-primary);
+    border: 2px solid var(--md-sys-color-primary);
+}
+
+.md-button.md-outlined:hover {
+    background-color: rgba(98, 0, 234, 0.1);
+    transform: translateY(-2px);
 }
