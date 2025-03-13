@@ -1,0 +1,67 @@
+{% extends 'chatapp_app/base.html' %}
+{% block content %}
+<h2>Chat with {{ other_user.username }}</h2>
+
+<div class="chat-box">
+    {% for message in messages %}
+        {% if message.sender == request.user %}
+            <div class="my-message">
+                {{ message.chat }}
+                <span class="timestamp">{{ message.created_at|date:"H:i" }}</span>
+            </div>
+        {% else %}
+            <div class="other-message">
+                <strong>{{ message.sender.username }}:</strong>
+                {{ message.chat }}
+                <span class="timestamp">{{ message.created_at|date:"H:i" }}</span>
+            </div>
+        {% endif %}
+        {% endfor %}
+</div>
+
+<form method="post" class="message-form">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Type a message..." required>
+    <button type="submit">Send</button>
+</form>
+
+<style>
+    .chat-box {
+        height: 400px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    .my-message {
+        background-color: #d1e7dd;
+        padding: 8px;
+        margin: 5px;
+        border-radius: 8px;
+        text-align: right;
+    }
+    .other-message {
+        background-color: #f8d7da;
+        padding: 8px;
+        margin: 5px;
+        border-radius: 8px;
+        text-align: left;
+    }
+    .timestamp {
+        font-size: 0.8em;
+        color: #6c757d;
+    }
+    .message-form input {
+        width: calc(100% - 80px);
+        padding: 8px;
+        margin-right: 5px;
+    }
+    .message-form button {
+        padding: 8px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

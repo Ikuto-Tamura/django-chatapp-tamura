@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/',views.SignIn.as_view(),name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('home/',views.HomeView.as_view(),name='home'),
+    path('talk_room/<int:pk>/', views.TalkRoomView.as_view(), name='talk_room'),
 ]
 
 """

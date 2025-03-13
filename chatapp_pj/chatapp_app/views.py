@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, TemplateView
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from .forms import SignUpForm
+from .models import Chat
 
 User = get_user_model()
 
@@ -95,3 +97,40 @@ get_queryset(self)とget_context_data(self,**kwargs)は頻出のメソッドで�
 次の記事が分かりやすいです。
 https://qiita.com/sotaheavymetal21/items/34cf15d0b5f4ac0a2d0f
 """
+
+
+class TalkRoomView(LoginRequiredMixin, TemplateView):
+    model = User
+    template_name = 'chatapp_app/talk_room.html'
+
+    def get_queryset(self):
+        # 自分と相手のメッセージをすべて取得（時系列順に並び替え）
+        other_user = get_object_or_404(User, id=self.kwargs['pk'])
+
+        # メッセージが存在しなくてもアクセス可能
+        messages = Chat.objects.filter(
+            sender=self.request.user, receiver=other_user
+        ) | Chat.objects.filter(
+            sender=other_user, receiver=self.request.user
+        )
+        return messages.order_by('created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['messages'] = self.get_queryset()
+        context['other_user'] = get_object_or_404(User, id=self.kwargs['pk'])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        other_user = get_object_or_404(User, id=self.kwargs['pk'])
+        message = request.POST.get('message')
+
+        if message:
+            Chat.objects.create(
+                sender=request.user,
+                receiver=other_user,
+                chat=message
+            )
+            return HttpResponseRedirect(reverse('talk_room', kwargs={'pk': other_user.pk}))
+
+        return self.get(request, *args, **kwargs)
