@@ -1,5 +1,12 @@
+{% extends 'chatapp_app/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
 <h2>ようこそ!</h2>
-<img src="{{logged_in_user.user_icon.url}}">
+<img src="{{logged_in_user.user_icon.url}}" id="profile-img">
 <p>{{ logged_in_user.username }}さん</p>
 
 <h2>チャット可能なおともだち</h2>
@@ -8,3 +15,10 @@
     <li>{{ user.username }}</li>
   {% endfor %}
 </ul>
+
+<form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">ログアウト</button>
+</form>
+
+{% endblock %}

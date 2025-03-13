@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, TemplateView
 
@@ -20,6 +20,12 @@ Userモデルを変更したときに、個々のビューを書き直さなく�
 
 class IndexView(TemplateView):
     template_name = 'chatapp_app/index.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        # ログインしている場合、他のページにリダイレクト
+        if request.user.is_authenticated:
+            return redirect('home')  # リダイレクト先のURLを指定
+        return super().dispatch(request, *args, **kwargs)
 
 """
 htmlを描写するだけであれば、TemplateViewを継承することでとてもシンプルに書くことができます。

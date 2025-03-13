@@ -155,6 +155,7 @@ MEDIA_ROOT = BASE_DIR / 'media_local'
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = '/'
 
+
 """
 LoginViewを継承したViewを用いているとき、これらの変数が参照されます。
 LoginViewの実装をよく見ると、ログイン後のリダイレクト先に採用するURLには優先順位があることが分かります。
