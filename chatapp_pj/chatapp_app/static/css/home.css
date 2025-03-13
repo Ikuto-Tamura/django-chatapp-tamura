@@ -9,7 +9,7 @@ h2,
 h3 {
     color: var(--md-primary);
     font-weight: 500;
-    font-size: 32px;
+    font-size: 1.8rem;
 }
 
 .profile-section {
@@ -51,7 +51,7 @@ h3 {
 }
 
 .friend:hover {
-    background-color: var(--md-primary);
+    background-color: var(--md-secondary);
 }
 
 .friend-link {
@@ -80,9 +80,9 @@ h3 {
     color: var(--md-on-surface);
 }
 
+
 .no-message {
-    font-size: 0.9rem;
-    color: var(--md-secondary);
+    margin-top: 10px;
 }
 
 .message-time {
@@ -146,6 +146,6 @@ h3 {
 }
 
 .pagination .current-page {
-    background-color: #6200ea;
+    background-color: var(--md-primary);
     color: #fff;
 }

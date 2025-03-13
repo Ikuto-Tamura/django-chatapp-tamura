@@ -72,14 +72,14 @@
     }
 
     .message-content {
-        font-size: 16px;
+        font-size: 1.1rem;
         line-height: 1.5;
         color: #000;
         word-wrap: break-word;
     }
 
     .timestamp {
-        font-size: 12px;
+        font-size: 0.8rem;
         color: var(--md-outline);
         margin-top: 4px;
         display: block;
@@ -107,7 +107,7 @@
         border: none;
         outline: none;
         padding: 8px;
-        font-size: 16px;
+        font-size: 1.3rem;
         background-color: transparent;
         color: inherit;
     }
@@ -130,6 +130,6 @@
         background-color: #3700b3;
     }
 
-    .material-icons {
-        font-size: 24px;
+    .send-button {
+        font-size: 1.5rem;
     }
