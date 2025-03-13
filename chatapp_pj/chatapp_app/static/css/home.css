@@ -31,7 +31,7 @@ h3 {
     font-weight: 500;
 }
 
-/* Friend List */
+
 .friend-list {
     list-style: none;
     padding: 0;
@@ -91,39 +91,28 @@ h3 {
     margin-top: 5px;
 }
 
-/* Logout Button */
-.logout {
+/* 横のログアウトボタンと設定ボタン */
+.side-button {
     margin-top: 30px;
     text-align: center;
     display: flex;
     gap: 10px;
 }
 
-
+/* filledとoutlinedのボタンの追加スタイリング */
 
 .md-button.md-filled {
-    border: none;
     padding: 12px 24px;
-    border-radius: 50px;
-    font-weight: 500;
     width: 140px;
 }
 
-.md-button.md-filled:hover {
-    transform: translateY(-2px);
-}
+
 
 .md-button.md-outlined {
-    background-color: transparent;
-    color: var(--md-primary);
-    border: 2px solid var(--md-primary);
     width: 140px;
 }
 
-.md-button.md-outlined:hover {
-    background-color: rgba(98, 0, 234, 0.1);
-    transform: translateY(-2px);
-}
+/* ページネーションのボタンのスタイリング*/
 
 .pagination {
     display: flex;

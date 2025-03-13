@@ -6,7 +6,7 @@
 {% block content %}
 
 <h2 class="chat-title">
-    <a href="{% url 'home' %}"><img src="{% static 'img/back_button.png' %}" alt="back button" class="back-button"></a>
+    <a href="{% url 'home' %}" class="back-button"><</a>
     {{ other_user.username }}</h2>
 
 <div class="chat-box" id="chat-box">
@@ -41,7 +41,7 @@
     </div>
 </form>
 
-
+<!-- 常に最新のメッセージが見れるようにスクロールバーを下にあわせておきます。-->
 
 <script>
     window.onload = function() {
@@ -56,6 +56,5 @@
     });
     observer.observe(chatBox, { childList: true });
 </script>
-
 
 {% endblock %}

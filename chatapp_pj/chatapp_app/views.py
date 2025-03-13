@@ -43,6 +43,12 @@ class SignUpView(CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy('index')
 
+    def dispatch(self, request, *args, **kwargs):
+        # ログインしている場合、他のページにリダイレクト
+        if request.user.is_authenticated:
+            return redirect('home')  # リダイレクト先のURLを指定
+        return super().dispatch(request, *args, **kwargs)
+
 
 """
 CreateViewを継承して会員登録機能をシンプルに実装しています。

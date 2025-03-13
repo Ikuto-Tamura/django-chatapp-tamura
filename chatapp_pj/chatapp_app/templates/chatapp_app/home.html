@@ -9,7 +9,7 @@
     <h2>ようこそ, {{ logged_in_user.username }}さん!</h2>
     <div class="profile-section">
         <img src="{{ logged_in_user.user_icon.url }}" class="profile-img" class="profile-img">
-        <div class="logout">
+        <div class="side-button">
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="md-button md-filled" >ログアウト</button>
@@ -43,6 +43,7 @@
         {% endfor %}
     </ul>
 </div>
+<!-- 以下はページネーションボタンの実装です。-->
 <div class="pagination">
     {% if is_paginated %}
         {% if page_obj.has_previous %}

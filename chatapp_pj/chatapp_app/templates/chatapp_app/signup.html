@@ -1,15 +1,26 @@
-会員登録ページ(スタイリングはまだ適当です。真似したらだめです。)
+{% extends 'chatapp_app/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock %}
+{% block content %}
 
-
-
+<h2>会員登録</h2>
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">会員登録する！</button>
+    {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <div class="error">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit">会員登録する</button>
 </form>
 
-<!--
-{% csrf_token %}は必ず記述しましょう。
-画像をフォームで扱うときは、enctype="multipart/form-data"を追記します。
--->
+<a href="{% url 'index' %}" class="return-link">戻る</a>
+
+{% endblock %}
