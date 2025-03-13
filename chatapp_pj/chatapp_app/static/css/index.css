@@ -1,6 +1,6 @@
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: var(--md-sys-color-background);
+    background-color: var(--md-background);
     margin: 0;
     padding: 0;
     display: flex;
@@ -10,8 +10,8 @@ body {
 }
 
 h1 {
-    font-size: 2.5rem;
-    color: var(--md-sys-color-primary);
+    font-size: 36px;
+    color: var(--md-secondary);
     text-align: center;
 }
 

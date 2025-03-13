@@ -7,7 +7,7 @@
 
 h2,
 h3 {
-    color: var(--md-sys-color-primary);
+    color: var(--md-primary);
     font-weight: 500;
     font-size: 32px;
 }
@@ -27,7 +27,7 @@ h3 {
 
 .username {
     font-size: 1.2rem;
-    color: var(--md-sys-color-on-background);
+    color: var(--md-on-background);
     font-weight: 500;
 }
 
@@ -39,7 +39,7 @@ h3 {
 }
 
 .friend {
-    background-color: var(--md-sys-color-surface);
+    background-color: var(--md-surface);
     padding: 15px;
     margin: 20px 0;
     border-radius: 8px;
@@ -51,7 +51,7 @@ h3 {
 }
 
 .friend:hover {
-    background-color: var(--md-sys-color-primary);
+    background-color: var(--md-primary);
 }
 
 .friend-link {
@@ -70,24 +70,24 @@ h3 {
 .friend-name {
     font-weight: 500;
     font-size: 1.1rem;
-    color: var(--md-sys-color-on-surface);
+    color: var(--md-on-surface);
     padding-top: 10px;
     width: 80px;
 }
 
 .latest-message {
     font-size: 0.9rem;
-    color: var(--md-sys-color-on-surface);
+    color: var(--md-on-surface);
 }
 
 .no-message {
     font-size: 0.9rem;
-    color: var(--md-sys-color-secondary);
+    color: var(--md-secondary);
 }
 
 .message-time {
     font-size: 0.8rem;
-    color: var(--md-sys-color-on-surface);
+    color: var(--md-on-surface);
     margin-top: 5px;
 }
 
@@ -96,30 +96,28 @@ h3 {
     margin-top: 30px;
     text-align: center;
     display: flex;
+    gap: 10px;
 }
 
 
 
 .md-button.md-filled {
-    background-color: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
     border: none;
     padding: 12px 24px;
     border-radius: 50px;
     font-weight: 500;
     width: 140px;
-    margin: 0 10px;
 }
 
 .md-button.md-filled:hover {
-    background-color: #3700b3;
     transform: translateY(-2px);
 }
 
 .md-button.md-outlined {
     background-color: transparent;
-    color: var(--md-sys-color-primary);
-    border: 2px solid var(--md-sys-color-primary);
+    color: var(--md-primary);
+    border: 2px solid var(--md-primary);
+    width: 140px;
 }
 
 .md-button.md-outlined:hover {
