@@ -85,6 +85,7 @@ class HomeView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'chatapp_app/home.html'
     context_object_name = 'users'
+    paginate_by = 4
 
     def get_queryset(self):
         return User.objects.exclude(id=self.request.user.id)
@@ -164,3 +165,6 @@ class TalkRoomView(LoginRequiredMixin, TemplateView):
             return HttpResponseRedirect(reverse('talk_room', kwargs={'pk': other_user.pk}))
 
         return self.get(request, *args, **kwargs)
+    
+class SettingView(LoginRequiredMixin,TemplateView):
+    template_name = 'chatapp_app/settings.html'

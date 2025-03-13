@@ -9,13 +9,21 @@
     <h2>ようこそ, {{ logged_in_user.username }}さん!</h2>
     <div class="profile-section">
         <img src="{{ logged_in_user.user_icon.url }}" class="profile-img" class="profile-img">
+        <div class="logout">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="md-button md-filled" >ログアウト</button>
+            </form>
+            <a href="{% url 'settings' %}"><button class="md-button md-filled">設定</button></a>
+        </div>
     </div>
 
     <h3>チャット可能なおともだち</h3>
     <ul class="friend-list">
         {% for item in latest_messages %}
+        <a href="{% url 'talk_room' item.user.id %}" class="friend-link">
         <li class="friend">
-            <a href="{% url 'talk_room' item.user.id %}" class="friend-link">
+            
                 <div class="friend-info">
                     <span class="friend-name">{{ item.user.username }}</span>
                     <img src="{{ item.user.user_icon.url }}" class="profile-img">
@@ -29,17 +37,29 @@
                         <span class="no-message">メッセージはありません</span> <!-- メッセージがない場合 -->
                     {% endif %}
                 </div>
-            </a>
+            
         </li>
+    </a>
         {% endfor %}
     </ul>
-
-    <div class="logout">
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="md-button md-filled">ログアウト</button>
-        </form>
-    </div>
 </div>
+<div class="pagination">
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; 最初</a>
+            <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+        {% endif %}
+
+        <span class="current-page">
+            {{ page_obj.number }} / {{ paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+            <a href="?page={{ paginator.num_pages }}">最後 &raquo;</a>
+        {% endif %}
+    {% endif %}
+</div>
+
 
 {% endblock %}

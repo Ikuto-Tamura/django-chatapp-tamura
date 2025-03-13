@@ -10,6 +10,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('home/',views.HomeView.as_view(),name='home'),
     path('talk_room/<int:pk>/', views.TalkRoomView.as_view(), name='talk_room'),
+    path('settings/',views.SettingView.as_view(),name='settings'),
 ]
 
 """

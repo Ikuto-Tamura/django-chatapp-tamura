@@ -1,18 +1,20 @@
 .container {
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto;
     padding: 20px;
+    margin-left: 10%;
 }
 
 h2,
 h3 {
     color: var(--md-sys-color-primary);
     font-weight: 500;
+    font-size: 32px;
 }
 
 .profile-section {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
 }
@@ -34,19 +36,18 @@ h3 {
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 80%;
 }
 
 .friend {
     background-color: var(--md-sys-color-surface);
     padding: 15px;
-    margin: 10px 0;
+    margin: 20px 0;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
-    align-items: center;
     transition: background-color 0.3s ease;
+    height: 100px;
 }
 
 .friend:hover {
@@ -56,7 +57,9 @@ h3 {
 .friend-link {
     text-decoration: none;
     color: inherit;
-    display: flex;
+    display: block;
+    /* インライン要素をブロック要素にして幅を親要素に合わせる */
+    width: 100%;
     align-items: center;
 }
 
@@ -92,7 +95,10 @@ h3 {
 .logout {
     margin-top: 30px;
     text-align: center;
+    display: flex;
 }
+
+
 
 .md-button.md-filled {
     background-color: var(--md-sys-color-primary);
@@ -101,6 +107,8 @@ h3 {
     padding: 12px 24px;
     border-radius: 50px;
     font-weight: 500;
+    width: 140px;
+    margin: 0 10px;
 }
 
 .md-button.md-filled:hover {
@@ -117,4 +125,29 @@ h3 {
 .md-button.md-outlined:hover {
     background-color: rgba(98, 0, 234, 0.1);
     transform: translateY(-2px);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pagination a,
+.pagination .current-page {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination a:hover {
+    background-color: #f0f0f0;
+}
+
+.pagination .current-page {
+    background-color: #6200ea;
+    color: #fff;
 }
