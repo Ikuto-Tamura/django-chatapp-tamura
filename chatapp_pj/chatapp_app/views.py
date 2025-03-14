@@ -1,16 +1,21 @@
 import datetime
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import (
+    LoginView,
+    PasswordChangeDoneView,
+    PasswordChangeView,
+)
 from django.db.models import OuterRef, Q, Subquery
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import CreateView, ListView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 
-from .forms import SignUpForm
+from .forms import ProfileEditForm, SignUpForm
 from .models import Chat
 
 User = get_user_model()
@@ -221,5 +226,21 @@ message = request.POST.get('message')はhtmlのフォームを復習すれば意
 """
 
 
-class SettingView(LoginRequiredMixin,TemplateView):
+class SettingView(LoginRequiredMixin,UpdateView):
+    model = User
+    form_class = ProfileEditForm
     template_name = 'chatapp_app/settings.html'
+    success_url = reverse_lazy('home')
+
+    def get_object(self):
+        return self.request.user
+    """
+    UpdateViewは本来複数個作成されるインスタンスを編集対象としています。例えば、ブログアプリであれば記事などです。
+    だから、get_objectはpkやslugなどそのインスタンスのidにあたるものをurlとして要求するのですが、自分のプロフィール
+    編集のURLに自分のidを含めるなどをしない場合は、編集対象を自分に書き換えることでこの問題を解決できます。
+    """
+    
+class MyPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    form_class = PasswordChangeForm
+    template_name = 'chatapp_app/password_change.html'
+    success_url = reverse_lazy('home')

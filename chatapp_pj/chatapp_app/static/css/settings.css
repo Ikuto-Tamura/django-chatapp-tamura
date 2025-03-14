@@ -8,16 +8,18 @@ body {
     height: 100vh;
 }
 
+/* フォーム全体 */
 form {
-    background-color: var(--md-surface);
-    padding: 24px;
+    background-color: #ffffff;
+    padding: 100px;
     border-radius: 12px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
     box-sizing: border-box;
+    position: relative;
 }
 
+/* ラベル */
 label {
     display: block;
     font-size: 14px;
@@ -25,13 +27,13 @@ label {
     margin-bottom: 4px;
 }
 
+/* 入力フィールド */
 input[type="text"],
 input[type="email"],
-input[type="password"],
-input[type="file"] {
+input[type="password"] {
     width: 100%;
     padding: 12px 16px;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 16px;
@@ -41,11 +43,18 @@ input[type="file"] {
 
 input[type="text"]:focus,
 input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="file"]:focus {
+input[type="password"]:focus {
     border-color: var(--md-primary);
     outline: none;
 }
+
+/* エラーメッセージ */
+.error {
+    color: #d32f2f;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
 
 /* エラーメッセージ */
 .error {
@@ -55,6 +64,9 @@ input[type="file"]:focus {
 }
 
 button {
+    position: absolute;
+    left: 25%;
+    bottom: 30px;
     background-color: var(--md-primary);
     color: white;
     border: none;
@@ -63,7 +75,7 @@ button {
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s;
-    width: 100%;
+    width: 50%;
 }
 
 button:hover {
@@ -74,6 +86,7 @@ button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
 
 /* indexへのリンク */
 .return-link {
@@ -88,4 +101,12 @@ button:disabled {
 
 .return-link:hover {
     color: #3700b3;
+}
+
+.password-change {
+    display: block;
+    font-size: 1.1rem;
+    margin-top: 30px;
+    color: var(--md-on-background);
+    text-decoration: none;
 }

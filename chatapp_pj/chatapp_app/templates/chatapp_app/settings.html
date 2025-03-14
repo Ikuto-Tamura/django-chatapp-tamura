@@ -1,1 +1,28 @@
-設定ページ工事中
+{% extends 'chatapp_app/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/settings.css' %}">
+{% endblock %}
+{% block content %}
+
+<h2>プロフィール編集</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <div class="error">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <a href="{% url 'password_change' %}" class="password-change">パスワード編集はこっち</a>
+    <!-- {{form.as_p}}だけでも十分機能します。それぞれのフォームを細かく書きたいときはfor文を使ってそれぞれのフォームを記述することができます-->
+    <button type="submit">保存する</button>
+</form>
+
+<a href="{% url 'home' %}" class="return-link">戻る</a>
+
+{% endblock %}
