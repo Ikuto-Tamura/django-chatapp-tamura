@@ -3,11 +3,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import (
-    LoginView,
-    PasswordChangeDoneView,
-    PasswordChangeView,
-)
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.db.models import OuterRef, Q, Subquery
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -61,7 +57,7 @@ dispatchメソッドの改良で、条件分岐が加わっていることを解
 しかし、returnがif節の処理に入っている場合、このようにelse節を省略して書くことができます。
 この知識はよく使うので覚えておくと良いです。
 """
-#すでにログインしている場合にこのページを訪れようとしたらhomeにリダイレクトされる処理
+
 class SignUpView(CreateView):
     model = User
     template_name = "chatapp_app/signup.html"
