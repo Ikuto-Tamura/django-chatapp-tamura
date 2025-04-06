@@ -3,10 +3,17 @@ from django.db import models
 
 
 class User(AbstractUser):
-    user_icon = models.ImageField('プロフィール画像',upload_to='user_icons',default="sori_snow_boy.png")
+    user_icon = models.ImageField(
+        "プロフィール画像", upload_to="user_icons", default="sori_snow_boy.png"
+    )
+    email = models.EmailField(unique=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
-        return f"{self.username},{self.id}"
+        return f"{self.email}, {self.id}"
+
 
 """
 ImageFieldは画像を扱えるモデルフィールドです。これを使うには、Pillowをpip install Pillowでinstallする必要があります。
@@ -20,14 +27,27 @@ ImageFieldは画像を扱えるモデルフィールドです。これを使う�
 現状では、優先度はそこまで高くないので、djangoの実装に慣れてきたら考えてみてください。
 """
 
+
 class Chat(models.Model):
-    chat = models.CharField('メッセージ',max_length=500)
-    sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name='sent_messages',verbose_name='送信者')
-    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name='received_messages',verbose_name='受信者')
-    created_at = models.DateTimeField('送信日時',auto_now_add=True)
+    chat = models.CharField("メッセージ", max_length=500)
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="sent_messages",
+        verbose_name="送信者",
+    )
+    receiver = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="received_messages",
+        verbose_name="受信者",
+    )
+    created_at = models.DateTimeField("送信日時", auto_now_add=True)
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ["created_at"]
 
     def __str__(self):
-        return f"From {self.sender.username} to {self.receiver.username}: {self.chat[:30]}"
+        return (
+            f"From {self.sender.username} to {self.receiver.username}: {self.chat[:30]}"
+        )
