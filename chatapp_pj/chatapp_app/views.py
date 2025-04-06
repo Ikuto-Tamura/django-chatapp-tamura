@@ -1,9 +1,12 @@
 import datetime
+import random
 
-from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.core.mail import send_mail
 from django.db.models import OuterRef, Q, Subquery
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -24,16 +27,16 @@ Userモデルを変更したときに、個々のビューを書き直さなく�
 """
 
 
-
 class IndexView(TemplateView):
-    template_name = 'chatapp_app/index.html'
-    
-    #すでにログインしている場合にこのページを訪れようとしたらhomeにリダイレクトされる処理
+    template_name = "chatapp_app/index.html"
+
+    # すでにログインしている場合にこのページを訪れようとしたらhomeにリダイレクトされる処理
     def dispatch(self, request, *args, **kwargs):
         # ログインしている場合、他のページにリダイレクト
         if request.user.is_authenticated:
-            return redirect('home')  # リダイレクト先のURLを指定
+            return redirect("home")  # リダイレクト先のURLを指定
         return super().dispatch(request, *args, **kwargs)
+
 
 """
 htmlを描写するだけであれば、TemplateViewを継承し、template_nameを指定するだけでとてもシンプルに書くことができます。
@@ -58,16 +61,17 @@ dispatchメソッドの改良で、条件分岐が加わっていることを解
 この知識はよく使うので覚えておくと良いです。
 """
 
+
 class SignUpView(CreateView):
     model = User
     template_name = "chatapp_app/signup.html"
     form_class = SignUpForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy("index")
 
     def dispatch(self, request, *args, **kwargs):
         # ログインしている場合、他のページにリダイレクト
         if request.user.is_authenticated:
-            return redirect('home')  # リダイレクト先のURLを指定
+            return redirect("home")  # リダイレクト先のURLを指定
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -91,9 +95,55 @@ urls.pyのpath関数を見てください。nameがpath関数の第三引数に�
 なのですが、今はまだ覚えなくて大丈夫です。
 """
 
+
 class SignIn(LoginView):
-    template_name = 'chatapp_app/login.html'
+    template_name = "chatapp_app/login.html"
     redirect_authenticated_user = True
+
+    def post(self, request, *args, **kwargs):
+        session = request.session
+
+        if "otp_phase" in session:
+            # OTPフェーズ
+            user_id = session.get("pre_auth_user_id")
+            input_otp = request.POST.get("otp")
+            stored_otp = session.get("otp")
+
+            if str(input_otp) == str(stored_otp):
+                user = User.objects.get(id=user_id)
+                login(request, user)
+                session.pop("otp_phase")
+                session.pop("pre_auth_user_id")
+                session.pop("otp")
+                return redirect("home")
+            else:
+                messages.error(request, "OTPが間違っています。")
+                return self.form_invalid(self.get_form())
+
+        else:
+            # 通常のログイン認証フェーズ
+            form = self.get_form()
+            if form.is_valid():
+                user = form.get_user()
+                otp = random.randint(100000, 999999)
+                session["otp"] = otp
+                session["otp_phase"] = True
+                session["pre_auth_user_id"] = user.id
+
+                # consoleに送信（settings.pyでEMAIL_BACKENDをconsoleに設定）
+                send_mail(
+                    subject="ログイン用OTP",
+                    message=f"あなたのログインコードは {otp} です。",
+                    from_email=None,
+                    recipient_list=[user.email],
+                )
+                messages.info(
+                    request, "メールに送信された6桁コードを入力してください。"
+                )
+                return self.form_invalid(form)
+            else:
+                return self.form_invalid(form)
+
 
 """
 Login機能はLoginViewを継承することで簡単に実装することができます。
@@ -105,11 +155,10 @@ Falseにしてみて、挙動の変化を確かめてみるのもいい実験だ
 """
 
 
-
 class HomeView(LoginRequiredMixin, ListView):
     model = User
-    template_name = 'chatapp_app/home.html'
-    context_object_name = 'users'
+    template_name = "chatapp_app/home.html"
+    context_object_name = "users"
     paginate_by = 5
 
     def get_queryset(self):
@@ -118,45 +167,51 @@ class HomeView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['logged_in_user'] = self.request.user
+        context["logged_in_user"] = self.request.user
 
         # 各ユーザーの最新メッセージを取得するために、annotateを使用
-        users = context['users']
+        users = context["users"]
 
         # 最新メッセージを取得するサブクエリ
         latest_message_subquery = Chat.objects.filter(
-            Q(sender=self.request.user, receiver=OuterRef('pk')) |
-            Q(sender=OuterRef('pk'), receiver=self.request.user)
-        ).order_by('-created_at')
+            Q(sender=self.request.user, receiver=OuterRef("pk"))
+            | Q(sender=OuterRef("pk"), receiver=self.request.user)
+        ).order_by("-created_at")
 
         # 各ユーザーに対して最新メッセージを追加する
         users = users.annotate(
-            latest_message=Subquery(latest_message_subquery.values('chat')[:1]),
-            latest_message_time=Subquery(latest_message_subquery.values('created_at')[:1]),
+            latest_message=Subquery(latest_message_subquery.values("chat")[:1]),
+            latest_message_time=Subquery(
+                latest_message_subquery.values("created_at")[:1]
+            ),
         )
 
         # コンテキストに追加するリストを準備
         user_and_latest_messages = []
         for user in users:
-            user_and_latest_messages.append({
-                'user': user,
-                'message': user.latest_message,
-                'time': user.latest_message_time,
-            })
+            user_and_latest_messages.append(
+                {
+                    "user": user,
+                    "message": user.latest_message,
+                    "time": user.latest_message_time,
+                }
+            )
 
         # 時間順にソート
         user_and_latest_messages.sort(
-            key=lambda x: x['time'] if x['time'] is not None else timezone.make_aware(datetime.datetime.min),
-            reverse=True
+            key=lambda x: (
+                x["time"]
+                if x["time"] is not None
+                else timezone.make_aware(datetime.datetime.min)
+            ),
+            reverse=True,
         )
 
-        context['user_and_latest_messages'] = user_and_latest_messages
+        context["user_and_latest_messages"] = user_and_latest_messages
 
         return context
 
 
-
-    
 """
 context_object_nameやpagenate_byを設定すると何ができるようになるか調べてみましょう。
 get_queryset(self)とget_context_data(self,**kwargs)は頻出のメソッドです。それぞれどのようなメソッドかを調べてみましょう。
@@ -174,38 +229,42 @@ QオブジェクトやSubquery,OuterRefやannotateなどは大事なのでこれ
 
 class TalkRoomView(LoginRequiredMixin, TemplateView):
     model = User
-    template_name = 'chatapp_app/talk_room.html'
+    template_name = "chatapp_app/talk_room.html"
 
     def get_queryset(self):
         # 自分と相手のメッセージをすべて取得（時系列順に並び替え）
-        other_user = get_object_or_404(User, id=self.kwargs['pk'])
+        other_user = get_object_or_404(User, id=self.kwargs["pk"])
 
         # メッセージが存在しなくてもアクセス可能
-        messages = Chat.objects.filter(
-                Q(sender=self.request.user, receiver=other_user) | Q(sender=other_user, receiver=self.request.user)
-            ).select_related('sender', 'receiver').order_by('created_at')
+        messages = (
+            Chat.objects.filter(
+                Q(sender=self.request.user, receiver=other_user)
+                | Q(sender=other_user, receiver=self.request.user)
+            )
+            .select_related("sender", "receiver")
+            .order_by("created_at")
+        )
         return messages
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['messages'] = self.get_queryset()
-        context['other_user'] = get_object_or_404(User, id=self.kwargs['pk'])
+        context["messages"] = self.get_queryset()
+        context["other_user"] = get_object_or_404(User, id=self.kwargs["pk"])
         return context
 
     def post(self, request, *args, **kwargs):
-        other_user = get_object_or_404(User, id=self.kwargs['pk'])
-        message = request.POST.get('message')
+        other_user = get_object_or_404(User, id=self.kwargs["pk"])
+        message = request.POST.get("message")
 
         if message:
-            Chat.objects.create(
-                sender=request.user,
-                receiver=other_user,
-                chat=message
+            Chat.objects.create(sender=request.user, receiver=other_user, chat=message)
+            return HttpResponseRedirect(
+                reverse("talk_room", kwargs={"pk": other_user.pk})
             )
-            return HttpResponseRedirect(reverse('talk_room', kwargs={'pk': other_user.pk}))
 
         return self.get(request, *args, **kwargs)
-    
+
+
 """
 HomeViewでオーバーライドしたget_querysetやget_context_dataに加え、postというメソッドをオーバーライドしています。
 talk_roomでは、単にページにアクセスするだけでなく、メッセージを送信するという機能があり、POSTの処理が必要になるからですね。
@@ -222,21 +281,23 @@ message = request.POST.get('message')はhtmlのフォームを復習すれば意
 """
 
 
-class SettingView(LoginRequiredMixin,UpdateView):
+class SettingView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = ProfileEditForm
-    template_name = 'chatapp_app/settings.html'
-    success_url = reverse_lazy('home')
+    template_name = "chatapp_app/settings.html"
+    success_url = reverse_lazy("home")
 
     def get_object(self):
         return self.request.user
+
     """
     UpdateViewは本来複数個作成されるインスタンスを編集対象としています。例えば、ブログアプリであれば記事などです。
     だから、get_objectはpkやslugなどそのインスタンスのidにあたるものをurlとして要求するのですが、自分のプロフィール
     編集のURLに自分のidを含めるなどをしない場合は、編集対象を自分に書き換えることでこの問題を解決できます。
     """
-    
+
+
 class MyPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     form_class = PasswordChangeForm
-    template_name = 'chatapp_app/password_change.html'
-    success_url = reverse_lazy('home')
+    template_name = "chatapp_app/password_change.html"
+    success_url = reverse_lazy("home")

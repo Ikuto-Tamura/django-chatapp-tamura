@@ -9,6 +9,11 @@
 
 <form method="post">
     {% csrf_token %}
+
+    {% if request.session.otp_phase %}
+    <label>6桁の確認コードを入力してください:</label>
+    <input type="text" name="otp" maxlength="6" required>
+  {% else %}
     
     {% for field in form %}
         <div class="form-group">
@@ -19,9 +24,19 @@
             {% endif %}
         </div>
     {% endfor %}
+
+    {% endif %}
     
     <button type="submit">ログイン</button>
 </form>
+
+{% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 
 <!-- トップページへのリンク -->
 <a href="{% url 'index' %}" class="return-link">戻る</a>
