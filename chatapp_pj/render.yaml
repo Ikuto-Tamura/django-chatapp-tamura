@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: chatapp
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn chatapp_pj.wsgi:application"
+    staticPublishPath: staticfiles
