@@ -2,6 +2,10 @@ services:
   - type: web
     name: chatapp
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
     startCommand: "gunicorn chatapp_pj.wsgi:application"
-    staticPublishPath: staticfiles
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: chatapp_pj.settings
