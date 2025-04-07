@@ -132,7 +132,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 
-STATICFILES_DIRS = [
+STATICFILES_URL = [
     os.path.join(BASE_DIR, "chatapp_app/static"),
 ]
 
