@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-_xzh*8o!p#*vf(!7qv^&w@s-cs0&tf!@r=(e+8w$0^418y1cn3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["django-chatapp-tamura-5.onrender.com"]
+ALLOWED_HOSTS = ["django-chatapp-tamura-5.onrender.com", "127.0.0.1"]
 
 
 # Application definition
