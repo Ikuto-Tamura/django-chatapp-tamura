@@ -179,3 +179,13 @@ LoginViewの実装をよく見ると、ログイン後のリダイレクト先�
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+
+AWS_ACCESS_KEY_ID = "your-aws-access-key-id"
+AWS_SECRET_ACCESS_KEY = "your-aws-secret-access-key"
+AWS_STORAGE_BUCKET_NAME = "your-bucket-name"
+
+# メディアファイルの設定をS3に変更
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/"
