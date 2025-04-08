@@ -156,7 +156,7 @@ AUTH_USER_MODEL = "chatapp_app.User"
 """
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media_local"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 """
 画像に関する設定です。
